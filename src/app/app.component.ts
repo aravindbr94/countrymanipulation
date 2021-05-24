@@ -1,4 +1,4 @@
-import { Component,ViewChild,ElementRef,OnInit  } from '@angular/core';
+import { Component,ViewChild,ElementRef,OnInit,Input  } from '@angular/core';
 import {FormControl,FormGroup,FormBuilder,Validators,FormArray} from '@angular/forms';
 
 @Component({
@@ -7,98 +7,53 @@ import {FormControl,FormGroup,FormBuilder,Validators,FormArray} from '@angular/f
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  teacherform:FormGroup;
-  constructor(private fb:FormBuilder){
-    this.teacherform=this.fb.group({
-      teachers:this.fb.array([]),
+  countries=[
+    {id:"1",name:"India"},
+    {id:"2",name:"Australia"},
+    {id:"3",name:"South Africa"},
+    {id:"4",name:"England"},
+  ]
+
+  countryform:FormGroup;
+  country_name="";
+  dynamcountry="";
+
+  constructor(private fb:FormBuilder){}
+
+  ngOnInit()
+  {
+    this.countryform=this.fb.group({
+      country:["null"],
     })
-  }
-  teachers():FormArray
-  {
-    return this.teacherform.get("teachers") as FormArray;
-  }
-  newteacher():FormGroup
-  {
-    return this.fb.group({
-      teachname:[""],
-      batches:this.fb.array([]),
+
+    this.countryform.get("country").valueChanges.subscribe(e=>{
+      this.viewchanges(e);
     })
-  }
-  createteacher()
-  {
-    this.teachers().push(this.newteacher());
-  }
-  removeteacher(teachindex:number)
-  {
-    this.teachers().removeAt(teachindex);
   }
 
-  batches(teachindex:number):FormArray{
-    return this.teachers().at(teachindex).get("batches") as FormArray;
-  }
-  newbatch():FormGroup
+  viewchanges(e)
   {
-    return this.fb.group({
-      batchname:[""],
-      student:this.fb.array([]),
-    })
-  }
-  createbatch(teachindex:number)
-  {
-    this.batches(teachindex).push(this.newbatch());
-  }
-  removebatch(teachindex:number,batchindex:number)
-  {
-    this.batches(teachindex).removeAt(batchindex);
+    console.log("value changes");
+    console.log(e);
   }
 
-  student(teachindex:number,batchindex:number):FormArray{
-    return this.batches(teachindex).at(batchindex).get("student") as FormArray;
-  }
-  newstudent():FormGroup
+  addCountry()
   {
-    return this.fb.group({
-      studname:[""],
-    })
-  }
-  createstudent(teachindex:number,batchindex:number)
-  {
-    this.student(teachindex,batchindex).push(this.newstudent());
-  }
-  removestudent(teachindex:number,batchindex:number,studindex:number)
-  {
-    this.student(teachindex,batchindex).removeAt(studindex);
-  }
-  patchvalue1()
-  {
-    var obj={
-      teachers: [{ 
-        "teachname": "Vani", 
-        "batches": [{
-          "batchname": "2011", 
-          "student": [ 
-            { 
-            "studname": "Arvind" 
-            }, 
-            { 
-              "studname": "Arun" 
-            }
-          ] 
-        }] 
-      }] 
+    const country=this.countries.find(e=>e.name===this.country_name);
+    if(!country)
+    {
+      const id=Math.max.apply(Math,this.countries.map(function(o){ return o.id;}));
+      this.countries.push({id:id+1,name:this.country_name});
     }
-    obj.teachers.forEach((r)=>{
-      var teachn:FormGroup=this.newteacher();
-      this.teachers().push(teachn);
-      r.batches.forEach((b)=>{
-        var batchn:FormGroup=this.newbatch();
-        (teachn.get("batches") as FormArray).push(batchn);
-        b.student.forEach((s)=>{
-          var studn:FormGroup=this.newstudent();
-          (batchn.get("student") as FormArray).push(studn);
-        })
-      })
-    })
-    this.teacherform.patchValue(obj);
   }
+
+  changeCountry()
+  {
+    const country=this.countries.find(e=>e.name===this.dynamcountry);
+    if(country)
+    {
+      this.countryform.get("country").patchValue(country.id);
+    }
+  }
+
 }

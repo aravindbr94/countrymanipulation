@@ -1,38 +1,17 @@
-<form [formGroup]="teacherform">
-  <div formArrayName="teachers">
-    <div *ngFor="let t of teachers().controls;let teachindex=index;">
-      <div [formGroupName]="teachindex">
-        {{teachindex}}
-        <label>Teachername</label>
-        <input type="text" formControlName="teachname">
-        <button (click)="removeteacher(teachindex)">Remove Teacher</button>
-        <div formArrayName="batches">
-          <div *ngFor="let b of batches(teachindex).controls;let batchindex=index;">
-            <div [formGroupName]="batchindex">
-              {{batchindex}}
-              <label>Batch Name</label>
-              <input type="text" formControlName="batchname">
-              <button (click)="removebatch(teachindex,batchindex)">Remove Batch</button>
-              <div formArrayName="student">
-                  <div *ngFor="let s of student(teachindex,batchindex).controls;let studindex=index;">
-                    <div [formGroupName]="studindex">
-                      {{studindex}}
-                      <label>Student Name</label>
-                      <input type="text" formControlName="studname">
-                      <button (click)="removestudent(teachindex,batchindex,studindex)">Remove Student</button>
-                    </div>
-                  </div>
-              </div>
-              <button (click)="createstudent(teachindex,batchindex)">Add Student</button>
-            </div>
-          </div>
-      </div>
-        <button (click)="createbatch(teachindex)">Add Batch</button>
-      </div>
-    </div>
-    <button (click)="createteacher()">Add Teacher</button>
-    <button (click)="patchvalue1()">Set Patch Value</button>
-  </div>
-</form>
+<form [formGroup]="countryform">
+  <label>Country</label>
+  <select formControlName="country">
+    <option [ngValue]="null" disabled>Select Country</option>
+    <option [ngValue]="counc.id" *ngFor="let counc of countries;">
+      {{counc.name}}
+    </option>
+  </select>
+</form><br/>
+<label>Add Country</label>
+<input type="text" [(ngModel)]="country_name">
+<button (click)="addCountry()">Add</button><br/>
+<label>Change Country Country</label>
+<input type="text" [(ngModel)]="dynamcountry">
+<button (click)="changeCountry()">Add</button>
 
-{{teacherform.value | json}}
+
